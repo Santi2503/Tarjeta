@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Para Mi Amor</title>
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(45deg, #ff7eb9, #ff758c);
+        font-family: "Arial", sans-serif;
+        overflow: hidden;
+      }
+
+      .container {
+        text-align: center;
+        position: relative;
+        z-index: 2;
+      }
+
+      h1 {
+        color: #fff;
+        font-size: 3em;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        margin-bottom: 30px;
+      }
+
+      .corazon {
+        font-size: 100px;
+        color: #ff2768;
+        cursor: pointer;
+        transition: transform 0.3s;
+        animation: latido 1.2s infinite;
+      }
+
+      .mensaje {
+        display: none;
+        position: absolute;
+        color: #fff;
+        font-size: 1.5em;
+        white-space: nowrap;
+      }
+
+      @keyframes latido {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .boton-amor {
+        padding: 15px 30px;
+        font-size: 1.2em;
+        background: #fff;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-top: 20px;
+        color: #ff2768;
+      }
+
+      .boton-amor:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+      }
+
+      .particulas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas class="particulas"></canvas>
+
+    <div class="container">
+      <h1>Para mi Reina 💖</h1>
+      <div class="corazon" onclick="mostrarMensaje()">❤</div>
+      <button class="boton-amor" onclick="mostrarMensaje()">
+        Presione aquí
+      </button>
+    </div>
+
+    <script>
+      const mensajes = [
+        "Vida mía",
+        "Cada día te amo más",
+        "Eres perfecta para mí",
+        "Tu sonrisa es mi felicidad",
+        "Cada día te extraño",
+        "No dejaré de amarte",
+        "Mi corazón de melón",
+        "TE AMO ❤",
+      ];
+
+      function crearParticulas() {
+        const canvas = document.querySelector(".particulas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particulas = [];
+
+        class Particula {
+          constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.size = Math.random() * 5 + 1;
+            this.speedX = Math.random() * 3 - 1.5;
+            this.speedY = Math.random() * 3 - 1.5;
+            //this.color = hsl(${Math.random() * 360}, 100%, 50%);
+          }
+
+          update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+            if (this.size > 0.2) this.size -= 0.1;
+          }
+
+          draw() {
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        function animar() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          for (let i = 0; i < particulas.length; i++) {
+            particulas[i].update();
+            particulas[i].draw();
+
+            if (particulas[i].size <= 0.2) {
+              particulas.splice(i, 1);
+              i--;
+            }
+          }
+          requestAnimationFrame(animar);
+        }
+
+        canvas.addEventListener("mousemove", (e) => {
+          for (let i = 0; i < 5; i++) {
+            particulas.push(new Particula(e.clientX, e.clientY));
+          }
+        });
+
+        animar();
+      }
+
+      function mostrarMensaje() {
+        const mensaje = document.createElement("div");
+        mensaje.className = "mensaje";
+        mensaje.textContent =
+          mensajes[Math.floor(Math.random() * mensajes.length)];
+
+        const x = Math.random() * (window.innerWidth - 200);
+        const y = Math.random() * (window.innerHeight - 50);
+        mensaje.style.left = x + "px";
+        mensaje.style.top = y + "px";
+
+        document.body.appendChild(mensaje);
+
+        setTimeout(() => {
+          mensaje.style.display = "block";
+          mensaje.style.animation = "flotar 3s forwards";
+        }, 10);
+
+        setTimeout(() => {
+          mensaje.remove();
+        }, 3000);
+      }
+
+      window.addEventListener("resize", () => {
+        const canvas = document.querySelector(".particulas");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+
+      crearParticulas();
+    </script>
+  </body>
+</html>
