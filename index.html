@@ -2,196 +2,171 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Para Mi Amor</title>
+    <title>Flores y Amor</title>
     <style>
       body {
         margin: 0;
         height: 100vh;
+        background: linear-gradient(#ff9ff3, #feca57);
+        overflow: hidden;
         display: flex;
         justify-content: center;
         align-items: center;
-        background: linear-gradient(45deg, #ff7eb9, #ff758c);
-        font-family: "Arial", sans-serif;
-        overflow: hidden;
       }
 
-      .container {
-        text-align: center;
-        position: relative;
-        z-index: 2;
-      }
-
-      h1 {
-        color: #fff;
-        font-size: 3em;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        margin-bottom: 30px;
-      }
-
-      .corazon {
-        font-size: 100px;
-        color: #ff2768;
-        cursor: pointer;
-        transition: transform 0.3s;
-        animation: latido 1.2s infinite;
-      }
-
-      .mensaje {
-        display: none;
+      .flower {
         position: absolute;
-        color: #fff;
-        font-size: 1.5em;
-        white-space: nowrap;
+        animation: float 4s ease-in-out infinite;
       }
 
-      @keyframes latido {
-        0% {
-          transform: scale(1);
+      .petals {
+        width: 40px;
+        height: 40px;
+        background: radial-gradient(#ffd32a 30%, #ffa801);
+        border-radius: 50%;
+        position: relative;
+        animation: rotate 10s linear infinite;
+      }
+
+      .petals:before {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: #2d3436;
+        border-radius: 50%;
+        top: 10px;
+        left: 10px;
+      }
+
+      .stem {
+        position: absolute;
+        width: 6px;
+        height: 120px;
+        background: #2ecc71;
+        top: 40px;
+        left: 17px;
+        transform-origin: bottom;
+        animation: sway 5s ease-in-out infinite;
+      }
+
+      .letter {
+        position: fixed;
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        max-width: 400px;
+        opacity: 0;
+        transform: scale(0);
+        transition: all 0.5s ease;
+        font-family: "sans-serif", cursive;
+        text-align: center;
+        cursor: pointer;
+      }
+
+      .letter.active {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
         }
         50% {
-          transform: scale(1.1);
+          transform: translateY(-20px);
         }
+      }
+
+      @keyframes rotate {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes sway {
+        0%,
         100% {
-          transform: scale(1);
+          transform: rotate(-5deg);
+        }
+        50% {
+          transform: rotate(5deg);
         }
       }
 
-      .boton-amor {
-        padding: 15px 30px;
-        font-size: 1.2em;
-        background: #fff;
-        border: none;
-        border-radius: 30px;
-        cursor: pointer;
-        transition: all 0.3s;
-        margin-top: 20px;
-        color: #ff2768;
-      }
-
-      .boton-amor:hover {
-        transform: scale(1.1);
-        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-      }
-
-      .particulas {
-        position: fixed;
-        top: 0;
-        left: 0;
-        pointer-events: none;
-        z-index: 1;
+      .hearts {
+        color: #ff4757;
+        font-size: 24px;
+        margin: 10px 0;
       }
     </style>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <canvas class="particulas"></canvas>
-
-    <div class="container">
-      <h1>Para mi Reina 💖</h1>
-      <div class="corazon" onclick="mostrarMensaje()">❤</div>
-      <button class="boton-amor" onclick="mostrarMensaje()">
-        Presione aquí
-      </button>
+    <div class="letter">
+      <div class="hearts">♥ ♥ ♥</div>
+      <h2>Para mi Amor</h2>
+      <p>
+        En este jardín de sueños,<br />
+        cada flor representa un momento contigo.<br />
+        Tus risas son mi melodía favorita,<br />
+        tu mirada mi inspiración.<br />
+        Eres la luz que ilumina mis días,<br />
+        mi amor por ti crece como estas flores,<br />
+        eterno y siempre radiante.
+      </p>
+      <h2>Te amo mi Reina</h2>
+      <div class="hearts">♥ ♥ ♥</div>
     </div>
 
     <script>
-      const mensajes = [
-        "Vida mía",
-        "Cada día te amo más",
-        "Eres perfecta para mí",
-        "Tu sonrisa es mi felicidad",
-        "Cada día te extraño",
-        "No dejaré de amarte",
-        "Mi corazón de melón",
-        "TE AMO ❤",
-      ];
+      function createFlower(x, y) {
+        const flower = document.createElement("div");
+        flower.className = "flower";
+        flower.style.left = x + "px";
+        flower.style.top = y + "px";
 
-      function crearParticulas() {
-        const canvas = document.querySelector(".particulas");
-        const ctx = canvas.getContext("2d");
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        flower.innerHTML = `
+                <div class="petals"></div>
+                <div class="stem"></div>
+            `;
 
-        const particulas = [];
-
-        class Particula {
-          constructor(x, y) {
-            this.x = x;
-            this.y = y;
-            this.size = Math.random() * 5 + 1;
-            this.speedX = Math.random() * 3 - 1.5;
-            this.speedY = Math.random() * 3 - 1.5;
-            //this.color = hsl(${Math.random() * 360}, 100%, 50%);
-          }
-
-          update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            if (this.size > 0.2) this.size -= 0.1;
-          }
-
-          draw() {
-            ctx.fillStyle = this.color;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        }
-
-        function animar() {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-          for (let i = 0; i < particulas.length; i++) {
-            particulas[i].update();
-            particulas[i].draw();
-
-            if (particulas[i].size <= 0.2) {
-              particulas.splice(i, 1);
-              i--;
-            }
-          }
-          requestAnimationFrame(animar);
-        }
-
-        canvas.addEventListener("mousemove", (e) => {
-          for (let i = 0; i < 5; i++) {
-            particulas.push(new Particula(e.clientX, e.clientY));
-          }
+        flower.addEventListener("click", () => {
+          document.querySelector(".letter").classList.toggle("active");
         });
 
-        animar();
+        return flower;
       }
 
-      function mostrarMensaje() {
-        const mensaje = document.createElement("div");
-        mensaje.className = "mensaje";
-        mensaje.textContent =
-          mensajes[Math.floor(Math.random() * mensajes.length)];
-
-        const x = Math.random() * (window.innerWidth - 200);
-        const y = Math.random() * (window.innerHeight - 50);
-        mensaje.style.left = x + "px";
-        mensaje.style.top = y + "px";
-
-        document.body.appendChild(mensaje);
-
-        setTimeout(() => {
-          mensaje.style.display = "block";
-          mensaje.style.animation = "flotar 3s forwards";
-        }, 10);
-
-        setTimeout(() => {
-          mensaje.remove();
-        }, 3000);
+      // Crear flores aleatorias
+      for (let i = 0; i < 15; i++) {
+        const x = Math.random() * window.innerWidth;
+        const y = Math.random() * window.innerHeight;
+        document.body.appendChild(createFlower(x, y));
       }
 
-      window.addEventListener("resize", () => {
-        const canvas = document.querySelector(".particulas");
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+      // Animación de movimiento al pasar el mouse
+      document.addEventListener("mousemove", (e) => {
+        const flowers = document.querySelectorAll(".flower");
+        flowers.forEach((flower) => {
+          const rect = flower.getBoundingClientRect();
+          const distanceX = e.clientX - rect.left;
+          const distanceY = e.clientY - rect.top;
+
+          flower.style.transform = `translate(
+                    ${distanceX * -0.02}px, 
+                    ${distanceY * -0.02}px
+                )`;
+        });
       });
-
-      crearParticulas();
     </script>
   </body>
 </html>
